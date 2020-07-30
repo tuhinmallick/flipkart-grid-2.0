@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { addLead } from '../../actions/leads';
+// import '../../index.css'
+// import vogue from '../../images/vogue.jpg'
 
 export class Form extends Component {
     state = {
@@ -33,6 +35,7 @@ export class Form extends Component {
         return (
             <div className="card card-body mt-4 mb-4">
               <h2>Add Lead</h2>
+                           
               <form onSubmit={this.onSubmit}>
                 <div className="form-group">
                   <label>Name</label>
