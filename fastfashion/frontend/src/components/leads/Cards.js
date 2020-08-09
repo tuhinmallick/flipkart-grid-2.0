@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import { login } from '../../actions/auth';
 import vogue from '../../images/voguee.jpg';
 import ecomm from '../../images/ecomm.jpeg';
 import blog from '../../images/blog.jpeg';
@@ -29,7 +31,8 @@ export class Cards extends Component {
                         <div className="card-body text-dark">
                         <h4 className="card-title">Title</h4>
                         <p>hfiewlfnowfh fhwoihflffw</p>
-                        <a href="#" className="btn btn-outline-success">Anywhere</a> 
+                        {/* <Route exact path="/register" component={Register} /> */}
+                        <button className="btn btn-outline-success"><Link to="/login">Register</Link></button> 
                         </div>
                     </div>
                     </div>

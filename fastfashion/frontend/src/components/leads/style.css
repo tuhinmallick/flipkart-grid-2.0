@@ -31,7 +31,7 @@ body {
 .card-img-top {
     transform: scale(1);
     transition: transform 0.5s;
-    height: 295px;
+    height: 330px;
     width: 330px;
     padding: 0;
 }
