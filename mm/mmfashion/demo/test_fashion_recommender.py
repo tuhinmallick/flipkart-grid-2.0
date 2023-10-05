@@ -32,8 +32,7 @@ def parse_args():
         default='demo/imgs/fashion_compatibility/set2')
     parser.add_argument(
         '--use_cuda', type=bool, default=True, help='use gpu or not')
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 def main():
@@ -46,12 +45,12 @@ def main():
 
     # init logger
     logger = get_root_logger(cfg.log_level)
-    logger.info('Distributed test: {}'.format(distributed))
+    logger.info(f'Distributed test: {distributed}')
 
     # create model
     model = build_fashion_recommender(cfg.model)
     load_checkpoint(model, cfg.load_from, map_location='cpu')
-    print('load checkpoint from: {}'.format(cfg.load_from))
+    print(f'load checkpoint from: {cfg.load_from}')
     if args.use_cuda:
         model.cuda()
     model.eval()

@@ -27,8 +27,9 @@ def init_detector(config, checkpoint=None, device='cuda:0'):
     if isinstance(config, str):
         config = mmcv.Config.fromfile(config)
     elif not isinstance(config, mmcv.Config):
-        raise TypeError('config must be a filename or Config object, '
-                        'but got {}'.format(type(config)))
+        raise TypeError(
+            f'config must be a filename or Config object, but got {type(config)}'
+        )
     config.model.pretrained = None
     model = build_detector(config.model, test_cfg=config.test_cfg)
     if checkpoint is not None:
@@ -110,8 +111,7 @@ async def async_inference_detector(model, img):
     # We don't restore `torch.is_grad_enabled()` value during concurrent
     # inference since execution can overlap
     torch.set_grad_enabled(False)
-    result = await model.aforward_test(rescale=True, **data)
-    return result
+    return await model.aforward_test(rescale=True, **data)
 
 
 # TODO: merge this method with the one in BaseDetector

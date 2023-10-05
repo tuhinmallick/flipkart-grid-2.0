@@ -5,21 +5,20 @@ PREFIX = 'Landmark_Detect/Anno'
 
 def split_img():
     rf = open('Landmark_Detect/Eval//list_eval_partition.txt').readlines()
-    wf1 = open(os.path.join(PREFIX, 'train.txt'), 'w')
-    wf2 = open(os.path.join(PREFIX, 'test.txt'), 'w')
-    wf3 = open(os.path.join(PREFIX, 'val.txt'), 'w')
+    with open(os.path.join(PREFIX, 'train.txt'), 'w') as wf1:
+        wf2 = open(os.path.join(PREFIX, 'test.txt'), 'w')
+        wf3 = open(os.path.join(PREFIX, 'val.txt'), 'w')
 
-    for i, line in enumerate(rf[2:]):
-        aline = line.strip('\n').split()
-        imgname, prefix = aline[0], aline[1]
-        if prefix == 'train':
-            wf1.write('%s\n' % imgname)
-        elif prefix == 'test':
-            wf2.write('%s\n' % imgname)
-        else:
-            wf3.write('%s\n' % imgname)
+        for line in rf[2:]:
+            aline = line.strip('\n').split()
+            imgname, prefix = aline[0], aline[1]
+            if prefix == 'test':
+                wf2.write('%s\n' % imgname)
+            elif prefix == 'train':
+                wf1.write('%s\n' % imgname)
+            else:
+                wf3.write('%s\n' % imgname)
 
-    wf1.close()
     wf2.close()
     wf3.close()
 
@@ -94,7 +93,7 @@ def split_bbox(train_img, test_img, val_img):
             imgname = line.strip('\n')
             bbox = bboxes[imgname]
             for b in bbox:
-                wf.write('%s ' % str(b))
+                wf.write(f'{str(b)} ')
             wf.write('\n')
         wf.close()
 

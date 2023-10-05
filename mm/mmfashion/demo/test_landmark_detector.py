@@ -33,8 +33,7 @@ def parse_args():
         default=True)
     parser.add_argument(
         '--use_cuda', type=bool, default=True, help='use gpu or not')
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 def main():
@@ -52,7 +51,7 @@ def main():
     model = build_landmark_detector(cfg.model)
     print('model built')
     load_checkpoint(model, args.checkpoint)
-    print('load checkpoint from: {}'.format(args.checkpoint))
+    print(f'load checkpoint from: {args.checkpoint}')
 
     if args.use_cuda:
         model.cuda()
@@ -65,8 +64,9 @@ def main():
 
     for i, vis in enumerate(pred_vis):
         if vis >= 0.5:
-            print('detected landmark {} {}'.format(
-                pred_lm[i][0] * (w / 224.), pred_lm[i][1] * (h / 224.)))
+            print(
+                f'detected landmark {pred_lm[i][0] * (w / 224.0)} {pred_lm[i][1] * (h / 224.0)}'
+            )
             vis_lms.append(pred_lm[i])
 
     draw_landmarks(args.input, vis_lms)

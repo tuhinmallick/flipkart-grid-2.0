@@ -19,9 +19,9 @@ MINOR = 1
 PATCH = 0
 SUFFIX = ''
 if PATCH != '':
-    SHORT_VERSION = '{}.{}.{}{}'.format(MAJOR, MINOR, PATCH, SUFFIX)
+    SHORT_VERSION = f'{MAJOR}.{MINOR}.{PATCH}{SUFFIX}'
 else:
-    SHORT_VERSION = '{}.{}{}'.format(MAJOR, MINOR, SUFFIX)
+    SHORT_VERSION = f'{MAJOR}.{MINOR}{SUFFIX}'
 
 version_file = 'mmdet/version.py'
 
@@ -75,7 +75,7 @@ __version__ = '{}'
 short_version = '{}'
 """
     sha = get_hash()
-    VERSION = SHORT_VERSION + '+' + sha
+    VERSION = f'{SHORT_VERSION}+{sha}'
 
     with open(version_file, 'w') as f:
         f.write(content.format(time.asctime(), VERSION, SHORT_VERSION))
@@ -97,7 +97,7 @@ def make_cuda_ext(name, module, sources):
         raise EnvironmentError('CUDA is required to compile MMDetection!')
 
     return CUDAExtension(
-        name='{}.{}'.format(module, name),
+        name=f'{module}.{name}',
         sources=[os.path.join(*module.split('.'), p) for p in sources],
         define_macros=define_macros,
         extra_compile_args={
@@ -106,8 +106,9 @@ def make_cuda_ext(name, module, sources):
                 '-D__CUDA_NO_HALF_OPERATORS__',
                 '-D__CUDA_NO_HALF_CONVERSIONS__',
                 '-D__CUDA_NO_HALF2_OPERATORS__',
-            ]
-        })
+            ],
+        },
+    )
 
 
 def parse_requirements(fname='requirements.txt', with_version=True):
@@ -137,8 +138,7 @@ def parse_requirements(fname='requirements.txt', with_version=True):
         if line.startswith('-r '):
             # Allow specifying requirements in other files
             target = line.split(' ')[1]
-            for info in parse_require_file(target):
-                yield info
+            yield from parse_require_file(target)
         else:
             info = {'line': line}
             if line.startswith('-e '):
@@ -165,25 +165,24 @@ def parse_requirements(fname='requirements.txt', with_version=True):
 
     def parse_require_file(fpath):
         with open(fpath, 'r') as f:
-            for line in f.readlines():
+            for line in f:
                 line = line.strip()
                 if line and not line.startswith('#'):
-                    for info in parse_line(line):
-                        yield info
+                    yield from parse_line(line)
 
     def gen_packages_items():
-        if exists(require_fpath):
-            for info in parse_require_file(require_fpath):
-                parts = [info['package']]
-                if with_version and 'version' in info:
-                    parts.extend(info['version'])
-                if not sys.version.startswith('3.4'):
-                    # apparently package_deps are broken in 3.4
-                    platform_deps = info.get('platform_deps')
-                    if platform_deps is not None:
-                        parts.append(';' + platform_deps)
-                item = ''.join(parts)
-                yield item
+        if not exists(require_fpath):
+            return
+        for info in parse_require_file(require_fpath):
+            parts = [info['package']]
+            if with_version and 'version' in info:
+                parts.extend(info['version'])
+            if not sys.version.startswith('3.4'):
+                # apparently package_deps are broken in 3.4
+                platform_deps = info.get('platform_deps')
+                if platform_deps is not None:
+                    parts.append(f';{platform_deps}')
+            yield ''.join(parts)
 
     packages = list(gen_packages_items())
     return packages

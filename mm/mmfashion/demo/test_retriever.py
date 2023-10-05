@@ -32,8 +32,7 @@ def parse_args():
         help='the checkpoint file to resume from')
     parser.add_argument(
         '--use_cuda', type=bool, default=True, help='use gpu or not')
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 def _process_embeds(dataset, model, cfg, use_cuda=True):
@@ -69,7 +68,7 @@ def main():
 
     model = build_retriever(cfg.model)
     load_checkpoint(model, args.checkpoint)
-    print('load checkpoint from {}'.format(args.checkpoint))
+    print(f'load checkpoint from {args.checkpoint}')
 
     if args.use_cuda:
         model.cuda()
