@@ -5,18 +5,17 @@ PREFIX = 'In-shop/Anno'
 
 def split_img():
     fn = open('In-shop/Eval/list_eval_partition.txt').readlines()
-    train = open(os.path.join(PREFIX, 'train_img.txt'), 'w')
-    query = open(os.path.join(PREFIX, 'query_img.txt'), 'w')
-    gallery = open(os.path.join(PREFIX, 'gallery_img.txt'), 'w')
+    with open(os.path.join(PREFIX, 'train_img.txt'), 'w') as train:
+        query = open(os.path.join(PREFIX, 'query_img.txt'), 'w')
+        gallery = open(os.path.join(PREFIX, 'gallery_img.txt'), 'w')
 
-    for i, line in enumerate(fn[2:]):
-        aline = line.strip('\n').split()
-        img, _, prefix = aline[0], aline[1], aline[2]
-        if prefix == 'train':
-            train.write(img)
-            train.write('\n')
-        else:
-            if prefix == 'query':
+        for line in fn[2:]:
+            aline = line.strip('\n').split()
+            img, _, prefix = aline[0], aline[1], aline[2]
+            if prefix == 'train':
+                train.write(img)
+                train.write('\n')
+            elif prefix == 'query':
                 query.write(img)
                 query.write('\n')
 
@@ -24,7 +23,6 @@ def split_img():
                 gallery.write(img)
                 gallery.write('\n')
 
-    train.close()
     query.close()
     gallery.close()
 
@@ -39,18 +37,17 @@ def split_label():
 
     def get_label(fn, prefix):
         rf = open(fn).readlines()
-        wf = open(os.path.join(PREFIX, '%s_labels.txt' % prefix), 'w')
-        for line in rf:
-            aline = line.strip('\n').split('/')
-            id = aline[3]
-            label = id2label[id]
-            for element in label:
-                if element == '1':
-                    wf.write('1 ')
-                else:
-                    wf.write('0 ')
-            wf.write('\n')
-        wf.close()
+        with open(os.path.join(PREFIX, f'{prefix}_labels.txt'), 'w') as wf:
+            for line in rf:
+                aline = line.strip('\n').split('/')
+                id = aline[3]
+                label = id2label[id]
+                for element in label:
+                    if element == '1':
+                        wf.write('1 ')
+                    else:
+                        wf.write('0 ')
+                wf.write('\n')
 
     get_label(os.path.join(PREFIX, 'train_img.txt'), 'train')
     get_label(os.path.join(PREFIX, 'gallery_img.txt'), 'gallery')
@@ -93,14 +90,13 @@ def split_bbox():
 
     def get_bbox(fn, prefix):
         namef = open(fn).readlines()
-        wf = open(os.path.join(PREFIX, '%s_bbox.txt' % prefix), 'w')
-        for i, name in enumerate(namef):
-            name = name.strip('\n')
-            bbox = name2bbox[name]
-            for cor in bbox:
-                wf.write('%s ' % cor)
-            wf.write('\n')
-        wf.close()
+        with open(os.path.join(PREFIX, f'{prefix}_bbox.txt'), 'w') as wf:
+            for i, name in enumerate(namef):
+                name = name.strip('\n')
+                bbox = name2bbox[name]
+                for cor in bbox:
+                    wf.write(f'{cor} ')
+                wf.write('\n')
 
     get_bbox(os.path.join(PREFIX, 'train_img.txt'), 'train')
     get_bbox(os.path.join(PREFIX, 'gallery_img.txt'), 'gallery')
@@ -124,19 +120,17 @@ def split_lms():
 
     def get_lm(fn, prefix):
         lines = open(fn).readlines()
-        wf = open(os.path.join(PREFIX, '%s_landmarks.txt' % prefix), 'w')
-
-        for line in lines:
-            name = line.strip('\n')
-            lms = name2lm[name]
-            cnt = len(lms)
-            while cnt < 16:
-                lms.append('0')
+        with open(os.path.join(PREFIX, f'{prefix}_landmarks.txt'), 'w') as wf:
+            for line in lines:
+                name = line.strip('\n')
+                lms = name2lm[name]
                 cnt = len(lms)
-            for lm in lms:
-                wf.write('%s ' % lm)
-            wf.write('\n')
-        wf.close()
+                while cnt < 16:
+                    lms.append('0')
+                    cnt = len(lms)
+                for lm in lms:
+                    wf.write(f'{lm} ')
+                wf.write('\n')
 
     get_lm(os.path.join(PREFIX, 'train_img.txt'), 'train')
     get_lm(os.path.join(PREFIX, 'query_img.txt'), 'query')

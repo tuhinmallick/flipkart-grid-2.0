@@ -115,8 +115,6 @@ test_cfg = dict(
         max_per_img=100,
         mask_thr_binary=0.5))
 
-# dataset settings
-dataset_type = 'mmfashionDataset'
 data_root = '/data/dataset/DeepFashion/In-shop/'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
@@ -147,28 +145,32 @@ test_pipeline = [
         ])
 ]
 
+dataset_type = 'mmfashionDataset'
 data = dict(
     imgs_per_gpu=2,
     workers_per_gpu=1,
     train=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/DeepFashion_segmentation_query.json',
-        img_prefix=data_root + 'Img/',
+        ann_file=f'{data_root}annotations/DeepFashion_segmentation_query.json',
+        img_prefix=f'{data_root}Img/',
         pipeline=train_pipeline,
-        data_root=data_root),
+        data_root=data_root,
+    ),
     val=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/DeepFashion_segmentation_query.json',
-        img_prefix=data_root + 'Img/',
+        ann_file=f'{data_root}annotations/DeepFashion_segmentation_query.json',
+        img_prefix=f'{data_root}Img/',
         pipeline=test_pipeline,
-        data_root=data_root),
+        data_root=data_root,
+    ),
     test=dict(
         type=dataset_type,
-        ann_file=data_root +
-        'annotations/DeepFashion_segmentation_gallery.json',
-        img_prefix=data_root + 'Img/',
+        ann_file=f'{data_root}annotations/DeepFashion_segmentation_gallery.json',
+        img_prefix=f'{data_root}Img/',
         pipeline=test_pipeline,
-        data_root=data_root))
+        data_root=data_root,
+    ),
+)
 evaluation = dict(interval=5, metric=['bbox', 'segm'])
 
 # optimizer

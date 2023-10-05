@@ -6,33 +6,30 @@ PREFIX = 'Consumer_to_shop/Anno'
 def split_img():
     fn = open('Consumer_to_shop/Eval/list_eval_partition.txt').readlines()
 
-    # train dataset
-    train_consumer2shop = open(
-        os.path.join(PREFIX, 'train_consumer2shop.txt'), 'w')
-    train_imgs = []
+    with open(
+        os.path.join(PREFIX, 'train_consumer2shop.txt'), 'w') as train_consumer2shop:
+        train_imgs = []
 
-    # test dataset
-    test_consumer = open(os.path.join(PREFIX, 'consumer.txt'), 'w')
-    test_shop = open(os.path.join(PREFIX, 'shop.txt'), 'w')
-    consumer_imgs, shop_imgs = [], []
+        # test dataset
+        test_consumer = open(os.path.join(PREFIX, 'consumer.txt'), 'w')
+        test_shop = open(os.path.join(PREFIX, 'shop.txt'), 'w')
+        consumer_imgs, shop_imgs = [], []
 
-    for i, line in enumerate(fn[2:]):
-        aline = line.strip('\n').split()
-        consumer, shop, _, cate = aline[0], aline[1], aline[2], aline[3]
-        if cate == 'train':
-            newline = consumer + ' ' + shop + '\n'
-            train_consumer2shop.write(newline)
-            train_imgs.append(consumer)
-            train_imgs.append(shop)
-        else:
-            newline = consumer + '\n'
-            test_consumer.write(newline)
-            newline = shop + '\n'
-            test_shop.write(newline)
-            consumer_imgs.append(consumer)
-            shop_imgs.append(shop)
+        for line in fn[2:]:
+            aline = line.strip('\n').split()
+            consumer, shop, _, cate = aline[0], aline[1], aline[2], aline[3]
+            if cate == 'train':
+                newline = f'{consumer} {shop}' + '\n'
+                train_consumer2shop.write(newline)
+                train_imgs.extend((consumer, shop))
+            else:
+                newline = consumer + '\n'
+                test_consumer.write(newline)
+                newline = shop + '\n'
+                test_shop.write(newline)
+                consumer_imgs.append(consumer)
+                shop_imgs.append(shop)
 
-    train_consumer2shop.close()
     test_consumer.close()
     test_shop.close()
     return train_imgs, consumer_imgs, shop_imgs
@@ -41,34 +38,30 @@ def split_img():
 def split_bbox(train_set, consumer_set, shop_set):
     rf = open(os.path.join(PREFIX, 'list_bbox_consumer2shop.txt')).readlines()
     img2bbox = {}
-    for i, line in enumerate(rf[2:]):
+    for line in rf[2:]:
         aline = line.strip('\n').split()
         img = aline[0]
         bbox = aline[-4:]
         img2bbox[img] = bbox
 
-    wf_train = open(os.path.join(PREFIX, 'list_bbox_train.txt'), 'w')
-    wf_consumer = open(os.path.join(PREFIX, 'list_bbox_consumer.txt'), 'w')
-    wf_shop = open(os.path.join(PREFIX, 'list_bbox_shop.txt'), 'w')
-    for i, img in enumerate(train_set):
-        bbox = img2bbox[img]
-        newline = img + ' ' + bbox[0] + ' ' + bbox[1] + ' ' + bbox[
-            2] + ' ' + bbox[3] + '\n'
-        wf_train.write(newline)
+    with open(os.path.join(PREFIX, 'list_bbox_train.txt'), 'w') as wf_train:
+        wf_consumer = open(os.path.join(PREFIX, 'list_bbox_consumer.txt'), 'w')
+        wf_shop = open(os.path.join(PREFIX, 'list_bbox_shop.txt'), 'w')
+        for img in train_set:
+            bbox = img2bbox[img]
+            newline = f'{img} {bbox[0]} {bbox[1]} {bbox[2]} {bbox[3]}' + '\n'
+            wf_train.write(newline)
 
-    for i, img in enumerate(consumer_set):
-        bbox = img2bbox[img]
-        newline = img + ' ' + bbox[0] + ' ' + bbox[1] + ' ' + bbox[
-            2] + ' ' + bbox[3] + '\n'
-        wf_consumer.write(newline)
+        for img in consumer_set:
+            bbox = img2bbox[img]
+            newline = f'{img} {bbox[0]} {bbox[1]} {bbox[2]} {bbox[3]}' + '\n'
+            wf_consumer.write(newline)
 
-    for i, img in enumerate(shop_set):
-        bbox = img2bbox[img]
-        newline = img + ' ' + bbox[0] + ' ' + bbox[1] + ' ' + bbox[
-            2] + ' ' + bbox[3] + '\n'
-        wf_shop.write(newline)
+        for img in shop_set:
+            bbox = img2bbox[img]
+            newline = f'{img} {bbox[0]} {bbox[1]} {bbox[2]} {bbox[3]}' + '\n'
+            wf_shop.write(newline)
 
-    wf_train.close()
     wf_consumer.close()
     wf_shop.close()
 

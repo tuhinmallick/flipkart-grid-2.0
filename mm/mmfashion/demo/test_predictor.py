@@ -28,8 +28,7 @@ def parse_args():
         default='configs/attribute_predict/global_predictor_vgg_attr.py')
     parser.add_argument(
         '--use_cuda', type=bool, default=False, help='use gpu or not')
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 def main():
@@ -41,21 +40,18 @@ def main():
     load_checkpoint(model, args.checkpoint, map_location='cpu')
     if args.use_cuda:
         model.cuda()
-    
-    file = open(args.input)
 
-    img_paths = [line.rstrip('\n') for line in file]
+    with open(args.input) as file:
+        img_paths = [line.rstrip('\n') for line in file]
 
-    for path in img_paths:
-        img_tensor = get_img_tensor(path, args.use_cuda)
-        model.eval()
+        for path in img_paths:
+            img_tensor = get_img_tensor(path, args.use_cuda)
+            model.eval()
        # predict probabilities for each attribute
-        attr_prob = model(img_tensor, attr=None, landmark=None, return_loss=False)
-        attr_predictor = AttrPredictor(cfg.data.test)
+            attr_prob = model(img_tensor, attr=None, landmark=None, return_loss=False)
+            attr_predictor = AttrPredictor(cfg.data.test)
 
-        attr_predictor.show_prediction(attr_prob)
-
-    file.close()
+            attr_predictor.show_prediction(attr_prob)
 
 if __name__ == '__main__':
     main()
