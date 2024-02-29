@@ -62,7 +62,7 @@ Full tech stack [here](/techstack.md)
 # Tech Stack File
 ![](https://img.stackshare.io/repo.svg "repo") [tuhinmallick/flipkart-grid-2.0](https://github.com/tuhinmallick/flipkart-grid-2.0)![](https://img.stackshare.io/public_badge.svg "public")
 <br/><br/>
-|42<br/>Tools used|02/19/24 <br/>Report generated|
+|42<br/>Tools used|02/29/24 <br/>Report generated|
 |------|------|
 </div>
 
